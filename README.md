@@ -1,2 +1,2 @@
-# react-star-wars
-Solution for the coding assignment by Xebia
+# react-star-wars-cra
+Coding Assignment Solution
