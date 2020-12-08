@@ -87,13 +87,13 @@ const App = (props) => {
 
   return (
     <div className='min-w-full grid grid-cols-12 bg-gray-100 min-h-screen'>
-      <div className='bg-gray-100 col-span-12'>
-        <h1 className='text-6xl tracking-wide py-10 font-bold text-gray-700 text-center'>React Star Wars</h1>
-      </div>
       <div className='col-span-2'></div>
       <div className='col-span-8'>
         <Route path='/' exact render={props =>
           <div className='flex flex-col align-center justify-center my-10'>
+            <div className='bg-gray-100 col-span-12'>
+              <h1 className='text-6xl tracking-wide py-10 font-bold text-gray-700 text-center'>React Star Wars</h1>
+            </div>
             <p className='text-2xl text-gray-700 text-center'>Welcome! You have found the planets explorer.</p>
             <Login
               {...props}
@@ -123,9 +123,10 @@ const App = (props) => {
           </div>
         } />
         <Route path='/planets' exact render={props =>
-          <Planets
-            {...props}
-          />
+            <Planets
+              {...props}
+              username={username}
+            />
         } />
       </div>
       <div className='col-span-2'></div>

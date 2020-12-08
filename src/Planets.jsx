@@ -6,10 +6,32 @@ import SearchResults from './SearchResults';
 import PlanetInfo from './PlanetInfo';
 
 const Planets = (props) => {
-
+  console.log('props in Planets page: ', props, props.location.state[1]);
+  const [username, setUsername] = useState(
+    () => window.localStorage.getItem('username') === 'undefined' ? props.location.state[1] : window.localStorage.getItem('username')
+  )
   const [searchTerm, setSearchTerm] = useState(() => '');
   const [searchResults, setSearchResults] = useState(() => '');
   const [selectedPlanetInfo, setSelectedPlanetInfo] = useState(() => '');
+
+  useEffect(
+    () => {
+      console.log('setting the username to the localstorage: ', username);
+      window.localStorage.setItem('username', props.location.state[1])
+      console.log('done setting the username to the localstorage');
+    }, [username]
+  );
+
+  useEffect(
+    () => {
+      console.log('inside effect to send back');
+      console.log(username, typeof(username));
+      if ((username === "") || (username === 'undefined')) {
+        console.log('sending back...')
+        setTimeout(props.history.push('/', []), 0);
+      }
+    }, [username, props.history]
+  )
 
   const getRange = resultsArray => {
     let min = Infinity;
@@ -38,11 +60,11 @@ const Planets = (props) => {
         // set color, text size
         // console.log('inside first if')
         result.cssColor = 'text-red-500';
-        result.cssTextSize = 'text-base'
+        result.cssTextSize = 'text-xs'
       } else if ((rangeArray[0] <= population) && (population < rangeArray[0] + range/8)) {
         // console.log('inside if');
         result.cssColor = 'bg-green-50';
-        result.cssTextSize = 'text-sm';
+        result.cssTextSize = 'text-xs';
       } else if ((rangeArray[0] + range/8 <= population) && (population < rangeArray[0] + (2 * (range/8) ))) {
         // console.log('inside if');
         result.cssColor = 'bg-green-100';
@@ -50,27 +72,27 @@ const Planets = (props) => {
       } else if ((rangeArray[0] + (2* (range/8)) <= population) && (population < rangeArray[0] + (3 * (range/8) ))) {
         // console.log('inside if');
         result.cssColor = 'bg-green-200';
-        result.cssTextSize = 'text-lg';
+        result.cssTextSize = 'text-base';
       } else if ((rangeArray[0] + (3 * (range/8)) <= population) && (population < rangeArray[0] + (4 * (range/8) ))) {
         // console.log('inside if');
         result.cssColor = 'bg-green-300';
-        result.cssTextSize = 'text-2xl';
+        result.cssTextSize = 'text-lg';
       } else if ((rangeArray[0] + (4 * (range/8)) <= population) && (population < rangeArray[0] + (5 * (range/8) ))) {
         // console.log('inside if');
         result.cssColor = 'bg-green-400';
-        result.cssTextSize = 'text-3xl';
+        result.cssTextSize = 'text-lg';
       } else if ((rangeArray[0] + (5 * (range/8)) <= population) && (population < rangeArray[0] + (6 * (range/8) ))) {
         // console.log('inside if');
         result.cssColor = 'bg-green-500';
-        result.cssTextSize = 'text-4xl';
+        result.cssTextSize = 'text-xl';
       } else if ((rangeArray[0] + (6 * (range/8)) <= population) && (population < rangeArray[0] + (7 * (range/8) ))) {
         // console.log('inside if');
         result.cssColor = 'bg-green-600';
-        result.cssTextSize = 'text-5xl';
+        result.cssTextSize = 'text-2xl';
       } else if ((rangeArray[0] + (7 * (range/8)) <= population) && (population <= rangeArray[0] + (8 * (range/8) ))) {
         // console.log('inside if');
         result.cssColor = 'bg-green-700';
-        result.cssTextSize = 'text-6xl';
+        result.cssTextSize = 'text-3xl';
       }
       return result;
     })
@@ -114,23 +136,29 @@ const Planets = (props) => {
   }
 
   return (
-    <div className='grid grid-cols-2 gap-x-2'>
-    {/* // <div className='flex flex-row justify-between'> */}
-      <div>
-        <SearchBar
-          captureSearchInput={captureSearchInput}
-          searchTerm={searchTerm}
-        />
-        <SearchResults
-          searchResults={searchResults}
-          searchTerm={searchTerm}
-          handlePlanetSelect={handlePlanetSelect}
-        />
+    <div>
+      <div className='flex flex-row justify-center items-center'>
+        <h1 className='text-6xl tracking-wide py-10 font-bold text-gray-700 text-center'>React Star Wars</h1>
+        <p className='self-flex-end'>Welcome, {username}</p>
       </div>
-      <div>
-        <PlanetInfo
-          selectedPlanetInfo={selectedPlanetInfo}
-        />
+      <div className='grid grid-cols-2 gap-x-2'>
+      {/* // <div className='flex flex-row justify-between'> */}
+        <div>
+          <SearchBar
+            captureSearchInput={captureSearchInput}
+            searchTerm={searchTerm}
+          />
+          <SearchResults
+            searchResults={searchResults}
+            searchTerm={searchTerm}
+            handlePlanetSelect={handlePlanetSelect}
+          />
+        </div>
+        <div>
+          <PlanetInfo
+            selectedPlanetInfo={selectedPlanetInfo}
+          />
+        </div>
       </div>
     </div>
   )
