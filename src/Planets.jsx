@@ -6,7 +6,6 @@ import SearchResults from './SearchResults';
 import PlanetInfo from './PlanetInfo';
 
 const Planets = (props) => {
-  console.log('props to Planets page: ', props)
   const [username, setUsername] = useState(
     () => window.localStorage.getItem('username')
   )
