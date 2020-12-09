@@ -6,9 +6,9 @@ import SearchResults from './SearchResults';
 import PlanetInfo from './PlanetInfo';
 
 const Planets = (props) => {
-  console.log('props in Planets page: ', props, props.location.state[1]);
+  console.log('props to Planets page: ', props)
   const [username, setUsername] = useState(
-    () => window.localStorage.getItem('username') === 'undefined' ? props.location.state[1] : window.localStorage.getItem('username')
+    () => window.localStorage.getItem('username')
   )
   const [searchTerm, setSearchTerm] = useState(() => '');
   const [searchResults, setSearchResults] = useState(() => '');
@@ -16,19 +16,8 @@ const Planets = (props) => {
 
   useEffect(
     () => {
-      console.log('setting the username to the localstorage: ', username);
-      window.localStorage.setItem('username', props.location.state[1])
-      console.log('done setting the username to the localstorage');
-    }, [username]
-  );
-
-  useEffect(
-    () => {
-      console.log('inside effect to send back');
-      console.log(username, typeof(username));
       if ((username === "") || (username === 'undefined')) {
-        console.log('sending back...')
-        setTimeout(props.history.push('/', []), 0);
+        props.history.push('/');
       }
     }, [username, props.history]
   )
@@ -119,7 +108,6 @@ const Planets = (props) => {
   }, [searchTerm]);
 
   const captureSearchInput = (inputValue) => {
-    console.log(inputValue);
     if (inputValue !== '') {
       setSearchTerm(inputValue);
     } else if (inputValue.length === 0) {
@@ -138,8 +126,19 @@ const Planets = (props) => {
   return (
     <div>
       <div className='flex flex-row justify-center items-center'>
-        <h1 className='text-6xl tracking-wide py-10 font-bold text-gray-700 text-center'>React Star Wars</h1>
-        <p className='self-flex-end'>Welcome, {username}</p>
+        <div className=''>
+          <h1 className='text-6xl tracking-wide py-10 font-bold text-gray-700 text-center'>React Star Wars</h1>
+        </div>
+        <div className='pl-40 flex flex-row items-center'>
+          <p className='text-xl mr-2'>Welcome, {username}</p>
+          <button className='rounded shadow-lg p-2 bg-yellow-500 hover:bg-yellow-400'
+            onClick={() => {
+              props.history.replace('/planets', [false, '']);
+              window.localStorage.setItem('username', '');
+              setUsername('')}
+            }
+          >Logout</button>
+        </div>
       </div>
       <div className='grid grid-cols-2 gap-x-2'>
       {/* // <div className='flex flex-row justify-between'> */}

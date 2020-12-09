@@ -35,8 +35,8 @@ const App = (props) => {
             let apiPassword = userData.birth_year
             if (validateUser(apiUsername, apiPassword)) {
               // setIsLoggedIn(() => true);
-              console.log('successfully logged in!');
-              props.history.push('/planets', [true, username])
+              window.localStorage.setItem('username', userData.name)
+              props.history.push('/planets')
             } else {
               console.log('please check username and password');
             }
