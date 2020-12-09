@@ -13,6 +13,8 @@ const Planets = (props) => {
   const [searchTerm, setSearchTerm] = useState(() => '');
   const [searchResults, setSearchResults] = useState(() => '');
   const [selectedPlanetInfo, setSelectedPlanetInfo] = useState(() => '');
+  const [searchCountPerMinute, setSearchCountPerMinute] = useState(() => 0);
+  const [isOverLimit, setIsOverLimit] = useState(() => false);
 
   useEffect(
     () => {
@@ -20,6 +22,17 @@ const Planets = (props) => {
         props.history.push('/');
       }
     }, [username, props.history]
+  )
+
+  useEffect(
+    () => {
+      if (username !== 'Luke Skywalker') {
+        let intervalId = setInterval(() => setSearchCountPerMinute(0), 60000);
+        return (
+          () => clearInterval(intervalId)
+        )
+      }
+    }
   )
 
   const getRange = resultsArray => {
@@ -98,14 +111,25 @@ const Planets = (props) => {
         .then(response => {
           // console.log(response.data.results)
           // console.log(getRange(response.data.results));
-          let rangeArray = getRange(response.data.results);
-          let finalResults = setSize(response.data.results, rangeArray);
+          if (searchCountPerMinute < 15) {
+            setSearchCountPerMinute(prev => prev + 1);
+            let rangeArray = getRange(response.data.results);
+            let finalResults = setSize(response.data.results, rangeArray);
+            setSearchResults(finalResults);
+          } else if ((username !== 'Luke Skywalker') && (searchCountPerMinute === 15)) {
+            console.log('too many requests');
+            setIsOverLimit(true);
+          } else if (searchCountPerMinute >= 15 && username === 'Luke Skywalker') {
+            setSearchCountPerMinute(prev => prev + 1);
+            let rangeArray = getRange(response.data.results);
+            let finalResults = setSize(response.data.results, rangeArray);
+            setSearchResults(finalResults);
+          }
           // console.log('final results: ', finalResults);
-          setSearchResults(finalResults);
         })
         .catch(error => console.log('following error occured while trying to access planets data: ', error));
     }
-  }, [searchTerm]);
+  }, [searchTerm, username]);
 
   const captureSearchInput = (inputValue) => {
     if (inputValue !== '') {
@@ -151,6 +175,7 @@ const Planets = (props) => {
             searchResults={searchResults}
             searchTerm={searchTerm}
             handlePlanetSelect={handlePlanetSelect}
+            isOverLimit={isOverLimit}
           />
         </div>
         <div>
